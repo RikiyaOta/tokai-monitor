@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="0,0" last-zoom="1" max-obj-count="4"
+	 default-schema="public" default-owner="postgres">
+<database name="tokai-monitor-db" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layer="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="channels" layer="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="420" y="460"/>
+	<column name="id" not-null="true">
+		<type name="text" length="0"/>
+		<comment><![CDATA[Channel unique identifier provided by YouTube.]]></comment>
+	</column>
+	<column name="title" not-null="true">
+		<type name="text" length="0"/>
+		<comment><![CDATA[Channel title provided by YouTube.]]></comment>
+	</column>
+	<column name="created_at" not-null="true">
+		<type name="timestamp with time zone" length="0" with-timezone="true"/>
+	</column>
+	<column name="updated_at" not-null="true">
+		<type name="timestamp with time zone" length="0" with-timezone="true"/>
+	</column>
+	<constraint name="pk_channels" type="pk-constr" table="public.channels">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="videos" layer="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="840" y="560"/>
+	<column name="id" not-null="true">
+		<type name="text" length="0"/>
+		<comment><![CDATA[Video ID provided by YouTube.]]></comment>
+	</column>
+	<column name="channel_id" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="title" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="created_at" not-null="true">
+		<type name="timestamp with time zone" length="0" with-timezone="true"/>
+	</column>
+	<column name="updated_at" not-null="true">
+		<type name="timestamp with time zone" length="0" with-timezone="true"/>
+	</column>
+	<constraint name="pk_videos" type="pk-constr" table="public.videos">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="video_statistics" layer="0" collapse-mode="2" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1260" y="700"/>
+	<column name="video_id" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="recorded_on" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="view_count" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="like_count" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="dislike_count" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="comment_count" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="created_at" not-null="true">
+		<type name="timestamp with time zone" length="0" with-timezone="true"/>
+	</column>
+	<constraint name="pk_video_statistics" type="pk-constr" table="public.video_statistics">
+		<columns names="video_id,recorded_on" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_channels" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.channels" table="public.videos">
+	<columns names="channel_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_videos" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.videos" table="public.video_statistics">
+	<columns names="video_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_videos_channels" type="relfk" layer="0"
+	 src-table="public.videos"
+	 dst-table="public.channels" reference-fk="fk_channels"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_video_statistics_videos" type="relfk" layer="0"
+	 src-table="public.video_statistics"
+	 dst-table="public.videos" reference-fk="fk_videos"
+	 src-required="false" dst-required="true"/>
+
+</dbmodel>
