@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="0,0" last-zoom="1" max-obj-count="4"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="363,0" last-zoom="1" max-obj-count="4"
 	 default-schema="public" default-owner="postgres">
 <database name="tokai-monitor-db" is-template="false" allow-conns="true">
 </database>
@@ -11,11 +11,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <schema name="public" layer="0" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
 
-<table name="channels" layer="0" collapse-mode="2" max-obj-count="4" z-value="0">
+<table name="channels" layer="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="420" y="460"/>
 	<column name="id" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="channel_id" not-null="true">
 		<type name="text" length="0"/>
 		<comment><![CDATA[Channel unique identifier provided by YouTube.]]></comment>
 	</column>
@@ -32,18 +35,24 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<constraint name="pk_channels" type="pk-constr" table="public.channels">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
+	<constraint name="uq_channel_id" type="uq-constr" table="public.channels">
+		<columns names="channel_id" ref-type="src-columns"/>
+	</constraint>
 </table>
 
-<table name="videos" layer="0" collapse-mode="2" max-obj-count="6" z-value="0">
+<table name="videos" layer="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="840" y="560"/>
 	<column name="id" not-null="true">
-		<type name="text" length="0"/>
-		<comment><![CDATA[Video ID provided by YouTube.]]></comment>
+		<type name="uuid" length="0"/>
 	</column>
 	<column name="channel_id" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="video_id" not-null="true">
 		<type name="text" length="0"/>
+		<comment><![CDATA[Video ID provided by YouTube.]]></comment>
 	</column>
 	<column name="title" not-null="true">
 		<type name="text" length="0"/>
@@ -57,14 +66,20 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<constraint name="pk_videos" type="pk-constr" table="public.videos">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
+	<constraint name="uq_channle_id_video_id" type="uq-constr" table="public.videos">
+		<columns names="channel_id,video_id" ref-type="src-columns"/>
+	</constraint>
 </table>
 
-<table name="video_statistics" layer="0" collapse-mode="2" max-obj-count="8" z-value="0">
+<table name="video_statistics" layer="0" collapse-mode="2" max-obj-count="9" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1260" y="700"/>
+	<position x="1260" y="720"/>
+	<column name="id" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
 	<column name="video_id" not-null="true">
-		<type name="text" length="0"/>
+		<type name="uuid" length="0"/>
 	</column>
 	<column name="recorded_on" not-null="true">
 		<type name="date" length="0"/>
@@ -85,9 +100,28 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp with time zone" length="0" with-timezone="true"/>
 	</column>
 	<constraint name="pk_video_statistics" type="pk-constr" table="public.video_statistics">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_video_id_recorded_on" type="uq-constr" table="public.video_statistics">
 		<columns names="video_id,recorded_on" ref-type="src-columns"/>
 	</constraint>
 </table>
+
+<index name="idx_channel_id" table="public.videos"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="channel_id"/>
+		</idxelement>
+</index>
+
+<index name="idx_video_id" table="public.video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="video_id"/>
+		</idxelement>
+</index>
 
 <constraint name="fk_channels" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.channels" table="public.videos">
