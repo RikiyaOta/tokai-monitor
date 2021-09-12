@@ -4,6 +4,7 @@ defmodule TokaiMonitorAPI.VideoStatisticCollector do
   """
   use Timex
   require Logger
+  import Ecto.Query, only: [from: 2]
   import TokaiMonitorAPI.Helper.ConditionHelper, only: [if_not_nil: 2, is_error: 1]
   alias TokaiMonitorAPI.Repo
   alias TokaiMonitorAPI.Schema.{Channel, Video, VideoStatistic}
@@ -33,6 +34,7 @@ defmodule TokaiMonitorAPI.VideoStatisticCollector do
          {:ok, videos} <- fetch_videos(video_ids) do
       repo.transaction(fn ->
         {_n, upserted_videos} = save_videos(channel.id, videos, repo)
+        {_n, _} = switch_is_latest_to_false(repo)
         {_n, _} = save_video_statistics(upserted_videos, videos, repo)
       end)
       |> case do
@@ -207,6 +209,16 @@ defmodule TokaiMonitorAPI.VideoStatisticCollector do
     repo.insert_all(Video, entries, options)
   end
 
+  defp switch_is_latest_to_false(repo) do
+    now = DateTime.utc_now()
+
+    query =
+      from video_statistic in VideoStatistic,
+        where: video_statistic.is_latest == true
+
+    repo.update_all(query, set: [is_latest: false, updated_at: now])
+  end
+
   defp save_video_statistics(upserted_videos, video_params, repo) do
     now = DateTime.utc_now()
 
@@ -235,7 +247,9 @@ defmodule TokaiMonitorAPI.VideoStatisticCollector do
           :comment_count,
           video |> get_in(["statistics", "commentCount"]) |> if_not_nil(&String.to_integer/1)
         )
+        |> Map.put(:is_latest, true)
         |> Map.put(:created_at, now)
+        |> Map.put(:updated_at, now)
       end)
 
     repo.insert_all(VideoStatistic, entries)

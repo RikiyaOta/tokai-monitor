@@ -74,7 +74,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="video_statistics" layer="0" collapse-mode="2" max-obj-count="8" z-value="0">
+<table name="video_statistics" layer="0" collapse-mode="2" max-obj-count="10" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="1260" y="720"/>
@@ -96,7 +96,13 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="comment_count">
 		<type name="bigint" length="0"/>
 	</column>
+	<column name="is_latest" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
 	<column name="created_at" not-null="true">
+		<type name="timestamp with time zone" length="0" with-timezone="true"/>
+	</column>
+	<column name="updated_at" not-null="true">
 		<type name="timestamp with time zone" length="0" with-timezone="true"/>
 	</column>
 	<constraint name="pk_video_statistics" type="pk-constr" table="public.video_statistics">
@@ -117,6 +123,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
 			<column name="video_id"/>
+		</idxelement>
+</index>
+
+<index name="idx_is_latest" table="public.video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="hash" factor="0">
+		<idxelement use-sorting="false">
+			<column name="is_latest"/>
 		</idxelement>
 </index>
 
