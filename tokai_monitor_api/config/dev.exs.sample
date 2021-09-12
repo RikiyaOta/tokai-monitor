@@ -57,3 +57,8 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 config :tokai_monitor_api, google_api_key: ""
+
+config :tokai_monitor_api, TokaiMonitorAPI.Scheduler,
+  jobs: [
+    {"0 * * * *", {TokaiMonitorAPI.VideoStatisticCollector, :call, []}}
+  ]

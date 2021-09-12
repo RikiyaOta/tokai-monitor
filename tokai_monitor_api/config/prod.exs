@@ -16,6 +16,11 @@ config :tokai_monitor_api, TokaiMonitorAPIWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :tokai_monitor_api, TokaiMonitorAPI.Scheduler,
+  jobs: [
+    {"0 * * * *", {TokaiMonitorAPI.VideoStatisticCollector, :call, []}}
+  ]
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
