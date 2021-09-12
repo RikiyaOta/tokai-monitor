@@ -3,6 +3,7 @@ defmodule TokaiMonitorAPI.VideoStatisticCollector do
   Main module for collecting TokaiOnair Video Statistics.
   """
   use Timex
+  require Logger
   import TokaiMonitorAPI.Helper.ConditionHelper, only: [if_not_nil: 2, is_error: 1]
   alias TokaiMonitorAPI.Repo
   alias TokaiMonitorAPI.Schema.{Channel, Video, VideoStatistic}
@@ -13,9 +14,16 @@ defmodule TokaiMonitorAPI.VideoStatisticCollector do
   @base_query_params %{key: @api_key}
 
   def call() do
-    get_channels()
-    |> Enum.map(&do_call_for/1)
-    |> Enum.filter(&is_error/1)
+    Logger.info("Started VideoStatisticCollector.call/0 !!!")
+
+    result =
+      get_channels()
+      |> Enum.map(&do_call_for/1)
+      |> Enum.filter(&is_error/1)
+
+    Logger.info("Finished VideoStatisticCollector.call/0 !!! result=#{inspect(result)}.")
+
+    result
   end
 
   @spec do_call_for(Channel.t(), module()) :: :ok | {:error, term()}
