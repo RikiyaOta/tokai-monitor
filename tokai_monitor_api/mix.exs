@@ -44,7 +44,8 @@ defmodule TokaiMonitorAPI.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.8"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:quantum, "~> 3.0"},
     ]
   end
 

@@ -14,9 +14,10 @@ defmodule TokaiMonitorAPI.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: TokaiMonitorAPI.PubSub},
       # Start the Endpoint (http/https)
-      TokaiMonitorAPIWeb.Endpoint
+      TokaiMonitorAPIWeb.Endpoint,
       # Start a worker by calling: TokaiMonitorAPI.Worker.start_link(arg)
       # {TokaiMonitorAPI.Worker, arg}
+      TokaiMonitorAPI.Scheduler
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
