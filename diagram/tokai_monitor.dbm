@@ -40,7 +40,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="videos" layer="0" collapse-mode="2" max-obj-count="7" z-value="0">
+<table name="videos" layer="0" collapse-mode="2" max-obj-count="8" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="840" y="560"/>
@@ -57,6 +57,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="title" not-null="true">
 		<type name="text" length="0"/>
 	</column>
+	<column name="published_at" not-null="true">
+		<type name="timestamp with time zone" length="0" with-timezone="true"/>
+	</column>
 	<column name="created_at" not-null="true">
 		<type name="timestamp with time zone" length="0" with-timezone="true"/>
 	</column>
@@ -71,7 +74,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="video_statistics" layer="0" collapse-mode="2" max-obj-count="10" z-value="0">
+<table name="video_statistics" layer="0" collapse-mode="2" max-obj-count="8" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="1260" y="720"/>
@@ -81,32 +84,23 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="video_id" not-null="true">
 		<type name="uuid" length="0"/>
 	</column>
-	<column name="recorded_on" not-null="true">
-		<type name="date" length="0"/>
-	</column>
-	<column name="view_count" not-null="true">
+	<column name="view_count">
 		<type name="bigint" length="0"/>
 	</column>
-	<column name="like_count" not-null="true">
+	<column name="like_count">
 		<type name="bigint" length="0"/>
 	</column>
-	<column name="dislike_count" not-null="true">
+	<column name="dislike_count">
 		<type name="bigint" length="0"/>
 	</column>
-	<column name="comment_count" not-null="true">
+	<column name="comment_count">
 		<type name="bigint" length="0"/>
 	</column>
 	<column name="created_at" not-null="true">
 		<type name="timestamp with time zone" length="0" with-timezone="true"/>
 	</column>
-	<column name="updated_at" not-null="true">
-		<type name="timestamp with time zone" length="0" with-timezone="true"/>
-	</column>
 	<constraint name="pk_video_statistics" type="pk-constr" table="public.video_statistics">
 		<columns names="id" ref-type="src-columns"/>
-	</constraint>
-	<constraint name="uq_video_id_recorded_on" type="uq-constr" table="public.video_statistics">
-		<columns names="video_id,recorded_on" ref-type="src-columns"/>
 	</constraint>
 </table>
 

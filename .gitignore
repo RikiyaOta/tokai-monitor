@@ -1,2 +1,3 @@
 /dev
-/tokai-monitor-api/vendor
+/tokai_monitor_api/config/dev.exs
+/tokai_monitor_api/config/*secret.exs
