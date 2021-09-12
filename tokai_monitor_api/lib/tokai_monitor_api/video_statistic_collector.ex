@@ -34,7 +34,7 @@ defmodule TokaiMonitorAPI.VideoStatisticCollector do
          {:ok, videos} <- fetch_videos(video_ids) do
       repo.transaction(fn ->
         {_n, upserted_videos} = save_videos(channel.id, videos, repo)
-        {_n, _} = switch_is_latest_to_false(repo)
+        {_n, _} = switch_is_latest_to_false(channel.id, repo)
         {_n, _} = save_video_statistics(upserted_videos, videos, repo)
       end)
       |> case do
@@ -209,11 +209,13 @@ defmodule TokaiMonitorAPI.VideoStatisticCollector do
     repo.insert_all(Video, entries, options)
   end
 
-  defp switch_is_latest_to_false(repo) do
+  defp switch_is_latest_to_false(channel_id, repo) do
     now = DateTime.utc_now()
 
     query =
       from video_statistic in VideoStatistic,
+        inner_join: video in assoc(video_statistic, :video),
+        where: video.channel_id == ^channel_id,
         where: video_statistic.is_latest == true
 
     repo.update_all(query, set: [is_latest: false, updated_at: now])
