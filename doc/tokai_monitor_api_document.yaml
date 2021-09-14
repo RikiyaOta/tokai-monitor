@@ -1,0 +1,83 @@
+openapi: 3.0.0
+
+info:
+  title: "Tokai Monitor API Document"
+  version: 1.0.0
+  
+paths:
+  /v1/videos/ranking:
+    get:
+      summary: "ランキング取得"
+      parameters:
+      - name: channel.id
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: "46bc78e0-2294-4b0a-8373-5f8c6b48e10c"
+      - name: page.page_number
+        in: query
+        required: true
+        schema:
+          type: integer
+          example: 1
+      - name: page.page_size
+        in: query
+        required: true
+        schema:
+          type: integer
+          example: 10
+      - name: page.sort_key
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - view_count
+          - like_count
+          - dislike_count
+          - comment_count
+      - name: page.sort_type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      responses:
+        '200':
+          description: "成功"
+          content:
+            applicatin/json:
+              schema:
+                type: object
+                properties:
+                  videos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        video_id:
+                          type: string
+                        title:
+                          type: string
+                        published_at:
+                          type: string
+                          format: date-time
+                        statistics:
+                          type: object
+                          properties:
+                            view_count:
+                              type: integer
+                            like_count:
+                              type: integer
+                            dislike_count:
+                              type: integer
+                            comment_count:
+                              type: integer
+                  
