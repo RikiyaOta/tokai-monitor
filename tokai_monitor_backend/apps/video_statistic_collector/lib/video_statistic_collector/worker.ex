@@ -10,25 +10,31 @@ defmodule TokaiMonitorBackend.VideoStatisticCollector.Worker do
   alias TokaiMonitorBackend.TokaiMonitorDB.Schema.Channel
   alias TokaiMonitorBackend.VideoStatisticCollector.Service.{VideoService, VideoStatisticService}
 
-  @api_key Application.get_env(:tokai_monitor_api, :google_api_key)
+  @api_key Application.get_env(:video_statistic_collector, :google_api_key)
   @base_url "https://www.googleapis.com/youtube/v3/"
   @base_query_params %{key: @api_key}
 
   def call(repo \\ Repo, http_client \\ HTTPoison) do
-    Logger.info("Started VideoStatisticCollector.call/0 !!!")
+    Logger.info("Started TokaiMonitorBackend.VideoStatisticCollector.Worker.call/0 !!!")
 
     result =
       ChannelRepository.all(repo)
       |> Enum.map(&do_call_for(&1, repo, http_client))
       |> Enum.filter(&is_error/1)
 
-    Logger.info("Finished VideoStatisticCollector.call/0 !!! result=#{inspect(result)}.")
+    Logger.info(
+      "Finished TokaiMonitorBackend.VideoStatisticCollector.Worker.call/0 !!! result=#{inspect(result)}."
+    )
 
     result
   end
 
   @spec do_call_for(Channel.t(), module(), module()) :: :ok | {:error, term()}
   defp do_call_for(%Channel{} = channel, repo, http_client) do
+    Logger.info(
+      "Starting collect video statistics for: channel.id=#{channel.id}. channel.title=#{channel.title}."
+    )
+
     with {:ok, playlist_id} <- fetch_uploaded_video_list_for(channel, http_client),
          {:ok, video_ids} <- fetch_video_ids_by_playlist_id(playlist_id, http_client),
          {:ok, videos} <- fetch_videos(video_ids, http_client) do
