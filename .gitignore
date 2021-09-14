@@ -1,4 +1,3 @@
 /dev
 /tokai_monitor_backend/apps/**/config/dev.exs
 /tokai_monitor_backend/apps/**/config/*.secret.exs
-tokai_monitor_api/config/dev.exs
