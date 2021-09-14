@@ -10,6 +10,7 @@ defmodule TokaiMonitorBackend.VideoStatisticCollector.Application do
     children = [
       # Starts a worker by calling: TokaiMonitorBackend.VideoStatisticCollector.Worker.start_link(arg)
       # {TokaiMonitorBackend.VideoStatisticCollector.Worker, arg}
+      TokaiMonitorBackend.VideoStatisticCollector.Scheduler
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
