@@ -1,0 +1,8 @@
+import Config
+
+config :video_statistic_collector, google_api_key: ""
+
+config :video_statistic_collector, TokaiMonitorBackend.VideoStatisticCollector.Scheduler,
+  jobs: [
+    {"0 * * * *", {TokaiMonitorBackend.VideoStatisticCollector.Worker, :call, []}}
+  ]
