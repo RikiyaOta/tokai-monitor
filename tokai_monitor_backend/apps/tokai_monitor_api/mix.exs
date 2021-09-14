@@ -42,7 +42,10 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:params, "~> 2.0"},
+      {:tokai_monitor_common, in_umbrella: true},
+      {:tokai_monitor_db, in_umbrella: true}
     ]
   end
 
