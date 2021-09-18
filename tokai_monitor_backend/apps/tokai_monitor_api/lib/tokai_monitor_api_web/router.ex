@@ -8,6 +8,7 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPIWeb.Router do
   scope "/api/v1/", TokaiMonitorBackend.TokaiMonitorAPIWeb.V1 do
     pipe_through :api
 
+    get("/channels", ChannelController, :index)
     get("/videos/ranking", VideoController, :get_ranking)
   end
 end
