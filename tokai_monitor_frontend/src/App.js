@@ -35,7 +35,7 @@ export default function App() {
                 <CardActionArea>
                   <CardMedia
                     component="img"
-                    image="https://yt3.ggpht.com/ytc/AKedOLTDLauymQQXmfG3S_r3ZTzw8ds1VstwhcwvHU_8OA=s88-c-k-c0x00ffffff-no-rj"
+                    image="https://yt3.ggpht.com/ytc/AKedOLTDLauymQQXmfG3S_r3ZTzw8ds1VstwhcwvHU_8OA=s800-c-k-c0x00ffffff-no-rj"
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
