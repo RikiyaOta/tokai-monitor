@@ -5,6 +5,33 @@ info:
   version: 1.0.0
   
 paths:
+  /v1/channels:
+    get:
+      summary: "チャンネル一覧取得"
+      responses:
+        '200':
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  channels:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        channel_id:
+                          type: string
+                        index_number:
+                          type: integer
+                        title:
+                          type: string
+                        thumbnail_url:
+                          type: string
   /v1/videos/ranking:
     get:
       summary: "ランキング取得"
