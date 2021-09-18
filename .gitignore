@@ -3,3 +3,4 @@
 /tokai_monitor_backend/config/dev.exs
 /tokai_monitor_backend/apps/**/config/dev.exs
 /tokai_monitor_backend/apps/**/config/*.secret.exs
+/tokai_monitor_frontend/node_modules
