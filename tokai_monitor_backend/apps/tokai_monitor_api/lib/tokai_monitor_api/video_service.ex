@@ -1,10 +1,15 @@
 defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
+  use Timex
   import Ecto.Query
 
   import TokaiMonitorBackend.TokaiMonitorCommon.Constant.VideoStatistic,
     only: [view_count: 0, like_count: 0, dislike_count: 0, comment_count: 0]
 
-  alias TokaiMonitorBackend.TokaiMonitorAPIWeb.Params.V1.VideoRankingParams
+  alias TokaiMonitorBackend.TokaiMonitorAPIWeb.Params.V1.{
+    VideoRankingParams,
+    VideoIncreaseRankingParams
+  }
+
   alias TokaiMonitorBackend.TokaiMonitorDB.Schema.Video
   alias TokaiMonitorBackend.TokaiMonitorDB.Repo
 
@@ -22,6 +27,73 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
       |> limit(^Map.get(params, :"page.page_size"))
 
     Repo.all(query)
+  end
+
+  def get_videos_with_increment(%VideoIncreaseRankingParams{} = params) do
+    now = Timex.now()
+    channel_id = Map.get(params, :"channel.id")
+    period_unit = Map.get(params, :"period.unit")
+    period_value = Map.get(params, :"period.value")
+    key = Map.get(params, :key)
+    sort_type = Map.get(params, :sort_type)
+    page_number = Map.get(params, :"page.page_number")
+    page_size = Map.get(params, :"page.page_size")
+
+    start_time =
+      case period_unit do
+        "day" -> Timex.shift(now, days: period_value * -1)
+        "week" -> Timex.shift(now, weeks: period_value * -1)
+        "month" -> Timex.shift(now, months: period_value * -1)
+        "year" -> Timex.shift(now, years: period_value * -1)
+      end
+
+    raw_query = """
+    SELECT videos_with_increment.id
+         , videos_with_increment.video_id
+         , videos_with_increment.title
+         , videos_with_increment.published_at
+         , videos_with_increment.start_count
+         , videos_with_increment.end_count
+         , videos_with_increment.increment
+    FROM (
+      SELECT v.id
+           , v.video_id
+           , v.title
+           , v.published_at
+           , MIN(vs.#{key}) AS start_count
+           , MAX(vs.#{key}) AS end_count
+           , (MAX(vs.#{key}) - MIN(vs.#{key})) AS increment
+      FROM public.videos v
+      INNER JOIN public.video_statistics vs ON v.id = vs.video_id
+      WHERE v.channel_id = $1::uuid
+        AND vs.#{key} IS NOT NULL
+        AND vs.created_at >= $2::timestamp with time zone
+        AND vs.created_at <= $3::timestamp with time zone
+      GROUP BY v.id
+    ) videos_with_increment
+    ORDER BY videos_with_increment.increment #{sort_type}
+    OFFSET $4::integer
+    LIMIT $5::integer
+    ;
+    """
+
+    Repo.query(raw_query, [
+      Ecto.UUID.dump!(channel_id),
+      start_time,
+      now,
+      (page_number - 1) * page_size,
+      page_size
+    ])
+    |> case do
+      {:ok, %Postgrex.Result{columns: columns, rows: rows}} ->
+        {:ok,
+         Enum.map(rows, fn row ->
+           Enum.reduce(Enum.zip(columns, row), %{}, fn {k, v}, acc -> Map.put(acc, k, v) end)
+         end)}
+
+      {:error, error} ->
+        {:error, error}
+    end
   end
 
   defp filter_by(query, channel_id) do

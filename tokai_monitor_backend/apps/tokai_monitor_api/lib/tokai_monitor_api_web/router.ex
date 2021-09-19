@@ -10,5 +10,6 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPIWeb.Router do
 
     get("/channels", ChannelController, :index)
     get("/videos/ranking", VideoController, :get_ranking)
+    get("/videos/increase-ranking", VideoController, :get_increase_ranking)
   end
 end

@@ -45,6 +45,7 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:params, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
+      {:timex, "~> 3.0"},
       {:tokai_monitor_common, in_umbrella: true},
       {:tokai_monitor_db, in_umbrella: true}
     ]

@@ -87,24 +87,160 @@ paths:
                       type: object
                       properties:
                         id:
-                          type: string
-                          format: uuid
+                          $ref: "#/components/schemas/ID"
                         video_id:
-                          type: string
+                          $ref: "#/components/schemas/VideoID"
                         title:
-                          type: string
+                          $ref: "#/components/schemas/VideoTitle"
                         published_at:
-                          type: string
-                          format: date-time
+                          $ref: "#/components/schemas/DateTime"
                         statistics:
-                          type: object
-                          properties:
-                            view_count:
-                              type: integer
-                            like_count:
-                              type: integer
-                            dislike_count:
-                              type: integer
-                            comment_count:
-                              type: integer
-                  
+                          $ref: "#/components/schemas/VideoStatistics"
+  /v1/videos/increase-ranking:
+    get:
+      summary: "伸び数のランキング"
+      parameters:
+      - $ref: "#/components/parameters/channelId"
+      - name: period.unit
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/PeriodUnit"
+      - name: period.value
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/PeriodValue"
+      - name: key
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/VideoStatisticTypes"
+      - name: sort_type
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/SortTypes"
+      - name: page.page_number
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/PageNumber"
+      - name: page.page_size
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/PageSize"
+      responses:
+        '200':
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    $ref: "#/components/schemas/Page"
+                  videos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          $ref: "#/components/schemas/ID"
+                        video_id:
+                          $ref: "#/components/schemas/VideoID"
+                        title:
+                          $ref: "#/components/schemas/VideoTitle"
+                        published_at:
+                          $ref: "#/components/schemas/DateTime"
+                        start_count:
+                          type: integer
+                          example: 100
+                        end_count:
+                          type: integer
+                          example: 150
+                        increment:
+                          type: integer
+                          example: 50
+
+components:
+  schemas:
+    ID:
+      type: string
+      format: uuid
+      example: "46bc78e0-2294-4b0a-8373-5f8c6b48e10c"
+    DateTime:
+      type: string
+      format: date-time
+    PageNumber:
+      type: integer
+      minimum: 1
+      example: 1
+    PageSize:
+      type: integer
+      minimum: 1
+      example: 10
+    Page:
+      type: object
+      properties:
+        page_number:
+          $ref: "#/components/schemas/PageNumber"
+        page_size:
+          $ref: "#/components/schemas/PageSize"
+        total_page_count:
+          type: integer
+          example: 100
+        entries_count:
+          type: integer
+          example: 1000
+    VideoID:
+      type: string
+      example: ANZ1KUZlAxU
+    VideoTitle:
+      type: string
+      example: "鼻からミルクティーを一気飲み"
+    VideoStatistics:
+      type: object
+      properties:
+        view_count:
+          type: integer
+        like_count:
+          type: integer
+        dislike_count:
+          type: integer
+        comment_count:
+          type: integer
+    VideoStatisticTypes:
+      type: string
+      enum:
+      - view_count
+      - like_count
+      - dislike_count
+      - comment_count
+    SortTypes:
+      type: string
+      enum:
+      - asc
+      - desc
+    PeriodUnit:
+      type: string
+      enum:
+      - day
+      - week
+      - month
+      - year
+    PeriodValue:
+      type: integer
+      minimum: 1
+      example: 1
+
+  parameters:
+    channelId:
+      name: channel.id
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "46bc78e0-2294-4b0a-8373-5f8c6b48e10c"
