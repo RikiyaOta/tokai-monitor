@@ -14,7 +14,11 @@ config :tokai_monitor_api,
 config :tokai_monitor_api, TokaiMonitorBackend.TokaiMonitorAPIWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "pqIKlAd6DOYGNCzZP5epSm5INNeLysrzZGLwLpSyXTj6EqcJSDcIjpG33bfnc4iM",
-  render_errors: [view: TokaiMonitorBackend.TokaiMonitorAPIWeb.ErrorView, accepts: ~w(json), layout: false],
+  render_errors: [
+    view: TokaiMonitorBackend.TokaiMonitorAPIWeb.ErrorView,
+    accepts: ~w(json),
+    layout: false
+  ],
   pubsub_server: TokaiMonitorBackend.TokaiMonitorAPI.PubSub,
   live_view: [signing_salt: "ihQvAeFk"]
 
