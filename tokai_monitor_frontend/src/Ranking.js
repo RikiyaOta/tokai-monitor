@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Link, 
-  useParams
-} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import _ from 'lodash';
 
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
+import { DataGrid } from '@mui/x-data-grid';
 
 import './App.css';
 
@@ -32,38 +25,34 @@ export default function Ranking() {
     fetchData(channel_id);
   }, [channel_id]);
 
+  const rows = _.map(videos, video => {
+    return {
+      id: video.id,
+      title: video.title,
+      view_count: video.statistics.view_count,
+      like_count: video.statistics.like_count,
+      dislike_count: video.statistics.dislike_count,
+      comment_count: video.statistics.comment_count
+    };
+  });
+
+  const columns = [
+    {field: 'title', headerName: 'タイトル', width: 700},
+    {field: 'view_count', headerName: '再生回数', type: 'number', width: 150},
+    {field: 'like_count', headerName: '高評価数', type: 'number', width: 150},
+    {field: 'dislike_count', headerName: '低評価数', type: 'number', width: 150},
+    {field: 'comment_count', headerName: 'コメント数', type: 'number', width: 150}
+  ];
+
   return (
-    <>
+    <main>
       <Typography component="h2" variant="h6" color="primary" gutterBottom>
         {"ランキング"} 
       </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>{"タイトル"}</TableCell>
-            <TableCell>{"再生回数"}</TableCell>
-            <TableCell>{"高評価数"}</TableCell>
-            <TableCell>{"低評価数"}</TableCell>
-            <TableCell>{"コメント数"}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {
-            _.map(videos, video => {
-              return (
-                <TableRow key={video.id}>
-                  <TableCell>{video.title}</TableCell>
-                  <TableCell>{video.statistics.view_count}</TableCell>
-                  <TableCell>{video.statistics.like_count}</TableCell>
-                  <TableCell>{video.statistics.dislike_count}</TableCell>
-                  <TableCell>{video.statistics.comment_count}</TableCell>
-                </TableRow>
-              );
-            })
-          }
-        </TableBody>
-      </Table>
-    </>
+      <div style={{ height: '100%', width: '100%'}}>
+        <DataGrid autoHeight rows={rows} columns={columns} loading={rows.length === 0} isRowSelectable={() => false} isCellEditable={() => false}/>
+      </div>
+    </main>
   );
 }
 
