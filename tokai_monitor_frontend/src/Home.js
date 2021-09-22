@@ -4,21 +4,15 @@ import _ from 'lodash';
 
 import './App.css';
 
-import AppBar from '@mui/material/AppBar';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { fetchChannels } from './helpers/api.js';
-
-const theme = createTheme();
 
 
 export default function Home() {

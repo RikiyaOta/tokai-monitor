@@ -44,8 +44,6 @@ export default function Ranking() {
     {field: 'comment_count', headerName: 'コメント数', width: 150}
   ];
 
-  console.log('Rows:', rows);
-
   return (
     <main>
       <Typography component="h2" variant="h6" color="primary" gutterBottom>
