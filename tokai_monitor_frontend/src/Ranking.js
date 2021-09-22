@@ -38,10 +38,10 @@ export default function Ranking() {
 
   const columns = [
     {field: 'title', headerName: 'タイトル', width: 700},
-    {field: 'view_count', headerName: '再生回数', width: 150},
-    {field: 'like_count', headerName: '高評価数', width: 150},
-    {field: 'dislike_count', headerName: '低評価数', width: 150},
-    {field: 'comment_count', headerName: 'コメント数', width: 150}
+    {field: 'view_count', headerName: '再生回数', type: 'number', width: 150},
+    {field: 'like_count', headerName: '高評価数', type: 'number', width: 150},
+    {field: 'dislike_count', headerName: '低評価数', type: 'number', width: 150},
+    {field: 'comment_count', headerName: 'コメント数', type: 'number', width: 150}
   ];
 
   return (
@@ -50,7 +50,7 @@ export default function Ranking() {
         {"ランキング"} 
       </Typography>
       <div style={{ height: '100%', width: '100%'}}>
-        <DataGrid autoHeight rows={rows} columns={columns} />
+        <DataGrid autoHeight rows={rows} columns={columns} loading={rows.length === 0} isRowSelectable={() => false} isCellEditable={() => false}/>
       </div>
     </main>
   );
