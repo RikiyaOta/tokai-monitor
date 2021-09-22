@@ -34,44 +34,34 @@ export default function Home() {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AppBar position="relative">
-        <Toolbar>
-          <Typography variant="h6" color="inherit">
-            東海モニター
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <main>
-        <Container sx={{ py: 8 }} maxWidth="md">
-          <Grid container spacing={4}>
-            {
-              _.map(channels, channel => {
-                return (
-                  <Grid key={channel.id} item xs={12} sm={6} md={4}>
-                    <Link to={`/channels/${channel.id}/ranking`} style={{"textDecoration": "none"}}>
-                      <Card sx={{width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}}>
-                        <CardActionArea>
-                          <CardMedia
-                            component="img"
-                            image={channel.thumbnail_url}
-                          />
-                          <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                              {channel.title}
-                            </Typography>
-                          </CardContent>
-                        </CardActionArea>
-                      </Card>
-                    </Link>
-                  </Grid>
-                );
-              })
-            }
-          </Grid>
-        </Container>
-      </main>
-    </ThemeProvider>
+    <main>
+      <Container sx={{ py: 8 }} maxWidth="md">
+        <Grid container spacing={4}>
+          {
+            _.map(channels, channel => {
+              return (
+                <Grid key={channel.id} item xs={12} sm={6} md={4}>
+                  <Link to={`/channels/${channel.id}/ranking`} style={{"textDecoration": "none"}}>
+                    <Card sx={{width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}}>
+                      <CardActionArea>
+                        <CardMedia
+                          component="img"
+                          image={channel.thumbnail_url}
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="div">
+                            {channel.title}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </Link>
+                </Grid>
+              );
+            })
+          }
+        </Grid>
+      </Container>
+    </main>
   );
 }
