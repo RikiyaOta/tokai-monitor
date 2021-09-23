@@ -53,8 +53,7 @@ paths:
         in: query
         required: true
         schema:
-          type: integer
-          example: 10
+          $ref: "#/components/schemas/VideoStatisticTypes"
       - name: page.sort_key
         in: query
         required: true
@@ -211,6 +210,8 @@ components:
           type: integer
         comment_count:
           type: integer
+        view_count_increase_last_day:
+          type: integer
     VideoStatisticTypes:
       type: string
       enum:
@@ -218,6 +219,7 @@ components:
       - like_count
       - dislike_count
       - comment_count
+      - view_count_increase_last_day
     SortTypes:
       type: string
       enum:
