@@ -13,20 +13,58 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
   alias TokaiMonitorBackend.TokaiMonitorDB.Schema.Video
   alias TokaiMonitorBackend.TokaiMonitorDB.Repo
 
-  def get_videos_with_statistics(%VideoRankingParams{} = params) do
-    query =
-      Video
-      |> filter_by(Map.get(params, :"channel.id"))
-      |> preload_video_statistics()
-      |> only_latest()
-      |> where(^sort_key_is_not_nil(Map.get(params, :"page.sort_key")))
-      |> order_by(^sort_by(Map.get(params, :"page.sort_key"), Map.get(params, :"page.sort_type")))
-      |> offset(
-        ^((Map.get(params, :"page.page_number") - 1) * Map.get(params, :"page.page_size"))
-      )
-      |> limit(^Map.get(params, :"page.page_size"))
+  def get_videos_with_statistics(%VideoRankingParams{
+        :"channel.id" => channel_id,
+        :"page.page_number" => page_number,
+        :"page.page_size" => page_size,
+        :"page.sort_key" => sort_key,
+        :"page.sort_type" => sort_type
+      }) do
+    offset = (page_number - 1) * page_size
 
-    Repo.all(query)
+    raw_query = """
+    SELECT video_with_statistic.id
+         , video_with_statistic.video_id
+         , video_with_statistic.title
+         , video_with_statistic.published_at
+         , video_with_statistic.view_count
+         , video_with_statistic.like_count
+         , video_with_statistic.dislike_count
+         , video_with_statistic.comment_count
+         , video_with_statistic.view_count_increase_last_day
+      FROM (
+        SELECT v.id
+             , v.video_id
+             , v.title
+             , v.published_at
+             , vs.view_count
+             , vs.like_count
+             , vs.dislike_count
+             , vs.comment_count
+             , (
+                 -- 再生数は減らないという前提
+                 SELECT MAX(vs2.view_count) - MIN(vs2.view_count)
+                   FROM public.video_statistics vs2
+                  WHERE vs2.video_id = v.id
+                    AND vs2.created_at >= (NOW() - '1 day'::interval)::timestamp with time zone
+                    AND vs2.created_at <= NOW()
+               ) AS view_count_increase_last_day
+        FROM public.videos v
+        INNER JOIN public.video_statistics vs ON v.id = vs.video_id
+        WHERE v.channel_id = $1::uuid
+          AND vs.is_latest IS TRUE
+    ) video_with_statistic
+    ORDER BY video_with_statistic.#{sort_key} #{sort_type} NULLS LAST
+    OFFSET $2::integer
+    LIMIT $3::integer
+    ;
+    """
+
+    Repo.query(raw_query, [
+      Ecto.UUID.dump!(channel_id),
+      offset,
+      page_size
+    ])
   end
 
   def get_videos_with_increment(%VideoIncreaseRankingParams{} = params) do
@@ -95,60 +133,4 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
         {:error, error}
     end
   end
-
-  defp filter_by(query, channel_id) do
-    from(video in query,
-      where: video.channel_id == ^channel_id
-    )
-  end
-
-  defp preload_video_statistics(query) do
-    from(video in query,
-      inner_join: video_statistic in assoc(video, :video_statistics),
-      as: :video_statistics,
-      preload: [video_statistics: video_statistic]
-    )
-  end
-
-  defp only_latest(query) do
-    from([video_statistics: video_statistic] in query,
-      where: video_statistic.is_latest
-    )
-  end
-
-  defp sort_by(view_count(), sort_type),
-    do: [
-      {String.to_atom(sort_type),
-       dynamic([video_statistics: video_statisc], video_statisc.view_count)}
-    ]
-
-  defp sort_by(like_count(), sort_type),
-    do: [
-      {String.to_atom(sort_type),
-       dynamic([video_statistics: video_statisc], video_statisc.like_count)}
-    ]
-
-  defp sort_by(dislike_count(), sort_type),
-    do: [
-      {String.to_atom(sort_type),
-       dynamic([video_statistics: video_statisc], video_statisc.dislike_count)}
-    ]
-
-  defp sort_by(comment_count(), sort_type),
-    do: [
-      {String.to_atom(sort_type),
-       dynamic([video_statistics: video_statisc], video_statisc.comment_count)}
-    ]
-
-  defp sort_key_is_not_nil(view_count()),
-    do: dynamic([video_statistics: video_statistic], not is_nil(video_statistic.view_count))
-
-  defp sort_key_is_not_nil(like_count()),
-    do: dynamic([video_statistics: video_statistic], not is_nil(video_statistic.like_count))
-
-  defp sort_key_is_not_nil(dislike_count()),
-    do: dynamic([video_statistics: video_statistic], not is_nil(video_statistic.dislike_count))
-
-  defp sort_key_is_not_nil(comment_count()),
-    do: dynamic([video_statistics: video_statistic], not is_nil(video_statistic.comment_count))
 end
