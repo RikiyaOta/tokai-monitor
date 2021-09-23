@@ -1,17 +1,13 @@
 defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
   use Timex
-  import Ecto.Query
-
-  import TokaiMonitorBackend.TokaiMonitorCommon.Constant.VideoStatistic,
-    only: [view_count: 0, like_count: 0, dislike_count: 0, comment_count: 0]
 
   alias TokaiMonitorBackend.TokaiMonitorAPIWeb.Params.V1.{
     VideoRankingParams,
     VideoIncreaseRankingParams
   }
 
-  alias TokaiMonitorBackend.TokaiMonitorDB.Schema.Video
   alias TokaiMonitorBackend.TokaiMonitorDB.Repo
+  alias TokaiMonitorBackend.TokaiMonitorDB.Helper.PostgrexHelper
 
   def get_videos_with_statistics(%VideoRankingParams{
         :"channel.id" => channel_id,
@@ -65,6 +61,13 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
       offset,
       page_size
     ])
+    |> case do
+      {:ok, result} ->
+        {:ok, PostgrexHelper.to_maps(result)}
+
+      {:error, error} ->
+        {:error, error}
+    end
   end
 
   def get_videos_with_increment(%VideoIncreaseRankingParams{} = params) do
@@ -123,11 +126,8 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
       page_size
     ])
     |> case do
-      {:ok, %Postgrex.Result{columns: columns, rows: rows}} ->
-        {:ok,
-         Enum.map(rows, fn row ->
-           Enum.reduce(Enum.zip(columns, row), %{}, fn {k, v}, acc -> Map.put(acc, k, v) end)
-         end)}
+      {:ok, result} ->
+        {:ok, PostgrexHelper.to_maps(result)}
 
       {:error, error} ->
         {:error, error}

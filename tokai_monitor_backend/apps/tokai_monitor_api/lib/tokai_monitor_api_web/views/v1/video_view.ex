@@ -8,18 +8,17 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPIWeb.V1.VideoView do
   end
 
   def render("video.json", %{video: video}) do
-    [video_statistic] = video.video_statistics
-
     %{
-      id: video.id,
-      video_id: video.video_id,
-      title: video.title,
-      published_at: video.published_at,
+      id: Ecto.UUID.cast!(Map.get(video, "id")),
+      video_id: Map.get(video, "video_id"),
+      title: Map.get(video, "title"),
+      published_at: Map.get(video, "published_at"),
       statistics: %{
-        view_count: video_statistic.view_count,
-        like_count: video_statistic.like_count,
-        dislike_count: video_statistic.dislike_count,
-        comment_count: video_statistic.comment_count
+        view_count: Map.get(video, "view_count"),
+        like_count: Map.get(video, "like_count"),
+        dislike_count: Map.get(video, "dislike_count"),
+        comment_count: Map.get(video, "comment_count"),
+        view_count_increase_last_day: Map.get(video, "view_count_increase_last_day")
       }
     }
   end
