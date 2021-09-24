@@ -1,7 +1,8 @@
 import React from 'react';
 import {
   Switch,
-  Route
+  Route,
+  Link
 } from 'react-router-dom';
 import {
   createTheme,
@@ -22,9 +23,11 @@ export default function App() {
       <CssBaseline />
       <AppBar position="relative">
         <Toolbar>
-          <Typography variant="h6" color="inherit">
-            東海モニター
-          </Typography>
+          <Link to="/" style={{textDecoration: 'none'}}>
+            <Typography variant="h6" color="inherit">
+              東海モニター
+            </Typography>
+          </Link>
         </Toolbar>
       </AppBar>
       <Switch>
