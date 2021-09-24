@@ -9,21 +9,46 @@ import './App.css';
 
 import { fetchRanking } from './helpers/api.js';
 
+const initPageNumber = 1;
+const initPageSize = 10;
+const initSortKey = "view_count";
+const initSortType = "desc";
+const initSortInfo = {sortKey: initSortKey, sortType: initSortType};
+const initRowCount = 0;
+const rowsPerPageOptions = [10, 20, 50];
+
 export default function Ranking() {
   const [videos, setVideos] = useState([]);
-  const { channel_id } = useParams();
+  const [pageNumber, setPageNumber] = useState(initPageNumber);
+  const [pageSize, setPageSize] = useState(initPageSize);
+  const [sortInfo, setSortInfo] = useState(initSortInfo);
+  const [rowCount, setRowCount] = useState(initRowCount);
+  const { channel_id: channelId } = useParams();
+
+  const handleSortChange = (sortInfos) => {
+    if (sortInfos.length !== 1) return;
+
+    const {field, sort} = sortInfos[0];
+    const isChanged = (sortInfo.sortKey !== field || sortInfo.sortType !== sort);
+
+    if (!isChanged) return;
+
+    const newSortInfo = {sortKey: field, sortType: sort};
+    setSortInfo(newSortInfo);
+  };
 
   useEffect(() => {
-    async function fetchData(channel_id) {
-      const page_number = 1;
-      const page_size = 10;
-      const sort_key = "view_count";
-      const sort_type = "desc"
-      const result = await fetchRanking(channel_id, page_number, page_size, sort_key, sort_type);
+    async function fetchData(channelId, pageNumber, pageSize, sortKey, sortType) {
+      const result = await fetchRanking(channelId, pageNumber, pageSize, sortKey, sortType);
+      const fetchedVideos = result.data.videos;
+      const totalEntriesCount = result.data.page.total_entries_count;
       setVideos(result.data.videos);
+      setRowCount(totalEntriesCount);
     };
-    fetchData(channel_id);
-  }, [channel_id]);
+
+    const {sortKey, sortType} = sortInfo;
+    fetchData(channelId, pageNumber, pageSize, sortKey, sortType);
+  }, [channelId, pageNumber, pageSize, sortInfo.sortKey, sortInfo.sortType]);
 
   const rows = _.map(videos, video => {
     return {
@@ -38,7 +63,7 @@ export default function Ranking() {
   });
 
   const columns = [
-    {field: 'title', headerName: 'タイトル', width: 560},
+    {field: 'title', headerName: 'タイトル', width: 560, sortable: false, disableColumnMenu: true},
     {field: 'view_count', headerName: '再生回数', type: 'number', width: 150},
     {field: 'like_count', headerName: '高評価数', type: 'number', width: 150},
     {field: 'dislike_count', headerName: '低評価数', type: 'number', width: 150},
@@ -52,7 +77,25 @@ export default function Ranking() {
         {"ランキング"} 
       </Typography>
       <div style={{ height: '100%', width: '100%'}}>
-        <DataGrid autoHeight rows={rows} columns={columns} loading={rows.length === 0} isRowSelectable={() => false} isCellEditable={() => false}/>
+        <DataGrid autoHeight 
+                  rows={rows}
+                  rowCount={rowCount}
+                  columns={columns}
+                  rowsPerPageOptions={rowsPerPageOptions}
+                  page={pageNumber-1}
+                  pageSize={pageSize}
+                  pagination={true}
+                  paginationMode={"server"}
+                  loading={rows.length === 0}
+                  isRowSelectable={() => false} 
+                  isCellEditable={() => false}
+                  disableSelectionOnClick={true}
+                  disableColumnFilter={true}
+                  sortingOrder={['asc', 'desc']}
+                  onPageChange={(page) => setPageNumber(page+1)}
+                  onPageSizeChange={setPageSize}
+                  onSortModelChange={handleSortChange}
+        />
       </div>
     </main>
   );

@@ -18,7 +18,7 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
       }) do
     offset = (page_number - 1) * page_size
 
-    raw_query = """
+    select_data_query = """
     SELECT video_with_statistic.id
          , video_with_statistic.video_id
          , video_with_statistic.title
@@ -56,17 +56,25 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
     ;
     """
 
-    Repo.query(raw_query, [
-      Ecto.UUID.dump!(channel_id),
-      offset,
-      page_size
-    ])
-    |> case do
-      {:ok, result} ->
-        {:ok, PostgrexHelper.to_maps(result)}
+    count_query = """
+    SELECT COUNT(1)
+    FROM public.videos v
+    INNER JOIN public.video_statistics vs ON v.id = vs.video_id
+    WHERE v.channel_id = $1::uuid
+      AND vs.is_latest IS TRUE
+    ;
+    """
 
-      {:error, error} ->
-        {:error, error}
+    dumped_channel_id = Ecto.UUID.dump!(channel_id)
+
+    with {:ok, count_result} <- Repo.query(count_query, [dumped_channel_id]),
+         {:ok, data_result} <-
+           Repo.query(select_data_query, [dumped_channel_id, offset, page_size]) do
+      total_entries_count = hd(hd(count_result.rows))
+      videos = PostgrexHelper.to_maps(data_result)
+      {:ok, total_entries_count, videos}
+    else
+      {:error, error} -> {:error, error}
     end
   end
 

@@ -76,6 +76,12 @@ paths:
               schema:
                 type: object
                 properties:
+                  page:
+                    type: object
+                    properties:
+                      total_entries_count:
+                        type: integer
+                        example: 4000
                   videos:
                     type: array
                     items:

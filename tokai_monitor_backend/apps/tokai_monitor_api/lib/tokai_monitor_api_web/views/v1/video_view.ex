@@ -1,8 +1,11 @@
 defmodule TokaiMonitorBackend.TokaiMonitorAPIWeb.V1.VideoView do
   use TokaiMonitorBackend.TokaiMonitorAPIWeb, :view
 
-  def render("video_ranking.json", %{videos: videos}) do
+  def render("video_ranking.json", %{total_entries_count: total_entries_count, videos: videos}) do
     %{
+      page: %{
+        total_entries_count: total_entries_count
+      },
       videos: render_many(videos, __MODULE__, "video.json")
     }
   end

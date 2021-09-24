@@ -16,8 +16,11 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPIWeb.V1.VideoController do
         |> Params.data()
         |> VideoService.get_videos_with_statistics()
         |> case do
-          {:ok, videos} ->
-            render(conn, "video_ranking.json", videos: videos)
+          {:ok, total_entries_count, videos} ->
+            render(conn, "video_ranking.json",
+              total_entries_count: total_entries_count,
+              videos: videos
+            )
 
           {:error, error} ->
             Logger.error(
