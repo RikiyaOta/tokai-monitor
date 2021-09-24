@@ -53,17 +53,13 @@ paths:
         in: query
         required: true
         schema:
-          $ref: "#/components/schemas/VideoStatisticTypes"
+          type: integer
+          example: 10
       - name: page.sort_key
         in: query
         required: true
         schema:
-          type: string
-          enum:
-          - view_count
-          - like_count
-          - dislike_count
-          - comment_count
+          $ref: "#/components/schemas/VideoStatisticTypes"
       - name: page.sort_type
         in: query
         required: true
@@ -93,8 +89,16 @@ paths:
                           $ref: "#/components/schemas/VideoTitle"
                         published_at:
                           $ref: "#/components/schemas/DateTime"
-                        statistics:
-                          $ref: "#/components/schemas/VideoStatistics"
+                        view_count:
+                          type: integer
+                        like_count:
+                          type: integer
+                        dislike_count:
+                          type: integer
+                        comment_count:
+                          type: integer
+                        view_count_last_day:
+                          type: integer
   /v1/videos/increase-ranking:
     get:
       summary: "伸び数のランキング"
@@ -199,19 +203,6 @@ components:
     VideoTitle:
       type: string
       example: "鼻からミルクティーを一気飲み"
-    VideoStatistics:
-      type: object
-      properties:
-        view_count:
-          type: integer
-        like_count:
-          type: integer
-        dislike_count:
-          type: integer
-        comment_count:
-          type: integer
-        view_count_increase_last_day:
-          type: integer
     VideoStatisticTypes:
       type: string
       enum:
@@ -219,7 +210,7 @@ components:
       - like_count
       - dislike_count
       - comment_count
-      - view_count_increase_last_day
+      - view_count_last_day
     SortTypes:
       type: string
       enum:

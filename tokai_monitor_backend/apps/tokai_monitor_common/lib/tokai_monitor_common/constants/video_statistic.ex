@@ -3,7 +3,7 @@ defmodule TokaiMonitorBackend.TokaiMonitorCommon.Constant.VideoStatistic do
   defmacro like_count, do: "like_count"
   defmacro dislike_count, do: "dislike_count"
   defmacro comment_count, do: "comment_count"
-  defmacro view_count_increase_last_day, do: "view_count_increase_last_day"
+  defmacro view_count_last_day, do: "view_count_last_day"
 
   defmacro video_statitic_keys,
     do: [
@@ -11,6 +11,6 @@ defmodule TokaiMonitorBackend.TokaiMonitorCommon.Constant.VideoStatistic do
       like_count(),
       dislike_count(),
       comment_count(),
-      view_count_increase_last_day()
+      view_count_last_day()
     ]
 end

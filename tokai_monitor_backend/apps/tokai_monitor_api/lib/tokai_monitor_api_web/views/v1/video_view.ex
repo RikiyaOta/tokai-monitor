@@ -13,13 +13,11 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPIWeb.V1.VideoView do
       video_id: Map.get(video, "video_id"),
       title: Map.get(video, "title"),
       published_at: Map.get(video, "published_at"),
-      statistics: %{
-        view_count: Map.get(video, "view_count"),
-        like_count: Map.get(video, "like_count"),
-        dislike_count: Map.get(video, "dislike_count"),
-        comment_count: Map.get(video, "comment_count"),
-        view_count_increase_last_day: Map.get(video, "view_count_increase_last_day")
-      }
+      view_count: Map.get(video, "view_count"),
+      like_count: Map.get(video, "like_count"),
+      dislike_count: Map.get(video, "dislike_count"),
+      comment_count: Map.get(video, "comment_count"),
+      view_count_last_day: Map.get(video, "view_count_last_day")
     }
   end
 

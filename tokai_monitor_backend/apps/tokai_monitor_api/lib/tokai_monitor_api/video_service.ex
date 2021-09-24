@@ -27,7 +27,7 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
          , video_with_statistic.like_count
          , video_with_statistic.dislike_count
          , video_with_statistic.comment_count
-         , video_with_statistic.view_count_increase_last_day
+         , video_with_statistic.view_count_last_day
       FROM (
         SELECT v.id
              , v.video_id
@@ -44,7 +44,7 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
                   WHERE vs2.video_id = v.id
                     AND vs2.created_at >= (NOW() - '1 day'::interval)::timestamp with time zone
                     AND vs2.created_at <= NOW()
-               ) AS view_count_increase_last_day
+               ) AS view_count_last_day
         FROM public.videos v
         INNER JOIN public.video_statistics vs ON v.id = vs.video_id
         WHERE v.channel_id = $1::uuid

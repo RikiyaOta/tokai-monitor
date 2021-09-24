@@ -29,19 +29,21 @@ export default function Ranking() {
     return {
       id: video.id,
       title: video.title,
-      view_count: video.statistics.view_count,
-      like_count: video.statistics.like_count,
-      dislike_count: video.statistics.dislike_count,
-      comment_count: video.statistics.comment_count
+      view_count: video.view_count,
+      like_count: video.like_count,
+      dislike_count: video.dislike_count,
+      comment_count: video.comment_count,
+      view_count_last_day: video.view_count_last_day
     };
   });
 
   const columns = [
-    {field: 'title', headerName: 'タイトル', width: 700},
+    {field: 'title', headerName: 'タイトル', width: 560},
     {field: 'view_count', headerName: '再生回数', type: 'number', width: 150},
     {field: 'like_count', headerName: '高評価数', type: 'number', width: 150},
     {field: 'dislike_count', headerName: '低評価数', type: 'number', width: 150},
-    {field: 'comment_count', headerName: 'コメント数', type: 'number', width: 150}
+    {field: 'comment_count', headerName: 'コメント数', type: 'number', width: 150},
+    {field: 'view_count_last_day', headerName: '再生回数(24h)', type: 'number', width: 170}
   ];
 
   return (
