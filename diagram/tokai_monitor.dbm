@@ -182,7 +182,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<index name="idx_view_count" table="public.latest_video_statistics"
+<index name="idx_latest_video_statistics_view_count" table="public.latest_video_statistics"
 	 concurrent="false" unique="false" fast-update="false" buffering="false"
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
@@ -190,7 +190,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<index name="idx_like_count" table="public.latest_video_statistics"
+<index name="idx_latest_video_statistics_like_count" table="public.latest_video_statistics"
 	 concurrent="false" unique="false" fast-update="false" buffering="false"
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
@@ -198,7 +198,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<index name="idx_dislike_count" table="public.latest_video_statistics"
+<index name="idx_latest_video_statistics_dislike_count" table="public.latest_video_statistics"
 	 concurrent="false" unique="false" fast-update="false" buffering="false"
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
@@ -206,7 +206,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<index name="idx_comment_count" table="public.latest_video_statistics"
+<index name="idx_latest_video_statistics_comment_count" table="public.latest_video_statistics"
 	 concurrent="false" unique="false" fast-update="false" buffering="false"
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
@@ -214,7 +214,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<index name="idx_view_count_last_day" table="public.latest_video_statistics"
+<index name="idx_latest_video_statistics_view_count_last_day" table="public.latest_video_statistics"
 	 concurrent="false" unique="false" fast-update="false" buffering="false"
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
@@ -222,7 +222,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<index name="idx_view_count_last_week" table="public.latest_video_statistics"
+<index name="idx_latest_video_statistics_view_count_last_week" table="public.latest_video_statistics"
 	 concurrent="false" unique="false" fast-update="false" buffering="false"
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
@@ -230,7 +230,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<index name="idx_view_count_last_month" table="public.latest_video_statistics"
+<index name="idx_latest_video_statistics_view_count_last_month" table="public.latest_video_statistics"
 	 concurrent="false" unique="false" fast-update="false" buffering="false"
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
@@ -238,7 +238,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<index name="idx_view_count_last_year" table="public.latest_video_statistics"
+<index name="idx_latest_video_statistics_view_count_last_year" table="public.latest_video_statistics"
 	 concurrent="false" unique="false" fast-update="false" buffering="false"
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
