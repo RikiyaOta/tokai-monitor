@@ -107,10 +107,6 @@ paths:
                           type: integer
                         view_count_last_week:
                           type: integer
-                        view_count_last_month:
-                          type: integer
-                        view_count_last_year:
-                          type: integer
   /v1/videos/increase-ranking:
     get:
       summary: "伸び数のランキング"
@@ -224,8 +220,6 @@ components:
       - comment_count
       - view_count_last_day
       - view_count_last_week
-      - view_count_last_month
-      - view_count_last_year
     SortTypes:
       type: string
       enum:

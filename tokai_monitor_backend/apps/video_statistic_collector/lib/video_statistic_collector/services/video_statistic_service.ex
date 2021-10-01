@@ -62,8 +62,6 @@ defmodule TokaiMonitorBackend.VideoStatisticCollector.Service.VideoStatisticServ
       comment_count,
       view_count_last_day,
       view_count_last_week,
-      view_count_last_month,
-      view_count_last_year,
       created_at
     )
     SELECT video_with_statistic.video_id
@@ -73,8 +71,6 @@ defmodule TokaiMonitorBackend.VideoStatisticCollector.Service.VideoStatisticServ
          , video_with_statistic.comment_count
          , video_with_statistic.view_count_last_day
          , video_with_statistic.view_count_last_week
-         , video_with_statistic.view_count_last_month
-         , video_with_statistic.view_count_last_year
          , NOW()
       FROM (
         SELECT v.id AS video_id
@@ -98,22 +94,6 @@ defmodule TokaiMonitorBackend.VideoStatisticCollector.Service.VideoStatisticServ
                     AND vs3.created_at >= (NOW() - '1 week'::interval)::timestamp with time zone
                     AND vs3.created_at <= NOW()
                ) AS view_count_last_week
-             , (
-                 -- 再生数は減らないという前提
-                 SELECT MAX(vs4.view_count) - MIN(vs4.view_count)
-                   FROM public.video_statistics vs4
-                  WHERE vs4.video_id = v.id
-                    AND vs4.created_at >= (NOW() - '1 month'::interval)::timestamp with time zone
-                    AND vs4.created_at <= NOW()
-               ) AS view_count_last_month
-             , (
-                 -- 再生数は減らないという前提
-                 SELECT MAX(vs5.view_count) - MIN(vs5.view_count)
-                   FROM public.video_statistics vs5
-                  WHERE vs5.video_id = v.id
-                    AND vs5.created_at >= (NOW() - '1 year'::interval)::timestamp with time zone
-                    AND vs5.created_at <= NOW()
-               ) AS view_count_last_year
         FROM public.videos v
         INNER JOIN public.video_statistics vs ON v.id = vs.video_id
         WHERE v.channel_id = $1::uuid
@@ -126,8 +106,6 @@ defmodule TokaiMonitorBackend.VideoStatisticCollector.Service.VideoStatisticServ
                 , comment_count         = EXCLUDED.comment_count
                 , view_count_last_day   = EXCLUDED.view_count_last_day
                 , view_count_last_week  = EXCLUDED.view_count_last_week
-                , view_count_last_month = EXCLUDED.view_count_last_month
-                , view_count_last_year  = EXCLUDED.view_count_last_year
                 , created_at            = EXCLUDED.created_at
     ;
     """

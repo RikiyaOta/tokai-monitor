@@ -11,8 +11,6 @@ defmodule TokaiMonitorBackend.TokaiMonitorDB.Repo.Migrations.CreateTableLatestVi
       comment_count bigint,
       view_count_last_day bigint,
       view_count_last_week bigint,
-      view_count_last_month bigint,
-      view_count_last_year bigint,
       created_at timestamp with time zone NOT NULL,
 
       CONSTRAINT pk_latest_video_statistics PRIMARY KEY (video_id)
@@ -41,14 +39,6 @@ defmodule TokaiMonitorBackend.TokaiMonitorDB.Repo.Migrations.CreateTableLatestVi
 
     execute(
       "CREATE INDEX idx_latest_video_statistics_view_count_last_week ON public.latest_video_statistics USING btree ( view_count_last_week);"
-    )
-
-    execute(
-      "CREATE INDEX idx_latest_video_statistics_view_count_last_month ON public.latest_video_statistics USING btree ( view_count_last_month);"
-    )
-
-    execute(
-      "CREATE INDEX idx_latest_video_statistics_view_count_last_year ON public.latest_video_statistics USING btree ( view_count_last_year);"
     )
 
     execute("""
