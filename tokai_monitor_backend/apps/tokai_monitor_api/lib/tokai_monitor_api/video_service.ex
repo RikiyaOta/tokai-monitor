@@ -29,8 +29,6 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
          , lvs.comment_count
          , lvs.view_count_last_day
          , lvs.view_count_last_week
-         , lvs.view_count_last_month
-         , lvs.view_count_last_year
     FROM public.latest_video_statistics lvs
     INNER JOIN public.videos v ON lvs.video_id = v.id
     WHERE v.channel_id = $1::uuid
