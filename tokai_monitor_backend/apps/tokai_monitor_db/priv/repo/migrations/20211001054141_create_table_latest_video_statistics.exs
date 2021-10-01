@@ -15,7 +15,7 @@ defmodule TokaiMonitorBackend.TokaiMonitorDB.Repo.Migrations.CreateTableLatestVi
       view_count_last_year bigint,
       created_at timestamp with time zone NOT NULL,
 
-      CONSTRAINT pk_lastest_video_statistics PRIMARY KEY (video_id)
+      CONSTRAINT pk_latest_video_statistics PRIMARY KEY (video_id)
     );
     """)
 

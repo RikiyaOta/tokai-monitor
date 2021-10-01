@@ -177,7 +177,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="created_at" not-null="true">
 		<type name="timestamp with time zone" length="0" with-timezone="true"/>
 	</column>
-	<constraint name="pk_lastest_video_statistics" type="pk-constr" table="public.latest_video_statistics">
+	<constraint name="pk_latest_video_statistics" type="pk-constr" table="public.latest_video_statistics">
 		<columns names="video_id" ref-type="src-columns"/>
 	</constraint>
 </table>
