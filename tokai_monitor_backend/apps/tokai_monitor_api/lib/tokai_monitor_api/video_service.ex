@@ -19,38 +19,22 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
     offset = (page_number - 1) * page_size
 
     select_data_query = """
-    SELECT video_with_statistic.id
-         , video_with_statistic.video_id
-         , video_with_statistic.title
-         , video_with_statistic.published_at
-         , video_with_statistic.view_count
-         , video_with_statistic.like_count
-         , video_with_statistic.dislike_count
-         , video_with_statistic.comment_count
-         , video_with_statistic.view_count_last_day
-      FROM (
-        SELECT v.id
-             , v.video_id
-             , v.title
-             , v.published_at
-             , vs.view_count
-             , vs.like_count
-             , vs.dislike_count
-             , vs.comment_count
-             , (
-                 -- 再生数は減らないという前提
-                 SELECT MAX(vs2.view_count) - MIN(vs2.view_count)
-                   FROM public.video_statistics vs2
-                  WHERE vs2.video_id = v.id
-                    AND vs2.created_at >= (NOW() - '1 day'::interval)::timestamp with time zone
-                    AND vs2.created_at <= NOW()
-               ) AS view_count_last_day
-        FROM public.videos v
-        INNER JOIN public.video_statistics vs ON v.id = vs.video_id
-        WHERE v.channel_id = $1::uuid
-          AND vs.is_latest IS TRUE
-    ) video_with_statistic
-    ORDER BY video_with_statistic.#{sort_key} #{sort_type} NULLS LAST
+    SELECT v.id
+         , v.video_id
+         , v.title
+         , v.published_at
+         , lvs.view_count
+         , lvs.like_count
+         , lvs.dislike_count
+         , lvs.comment_count
+         , lvs.view_count_last_day
+         , lvs.view_count_last_week
+         , lvs.view_count_last_month
+         , lvs.view_count_last_year
+    FROM public.latest_video_statistics lvs
+    INNER JOIN public.videos v ON lvs.video_id = v.id
+    WHERE v.channel_id = $1::uuid
+    ORDER BY lvs.#{sort_key} #{sort_type} NULLS LAST
     OFFSET $2::integer
     LIMIT $3::integer
     ;
@@ -58,10 +42,9 @@ defmodule TokaiMonitorBackend.TokaiMonitorAPI.Service.VideoService do
 
     count_query = """
     SELECT COUNT(1)
-    FROM public.videos v
-    INNER JOIN public.video_statistics vs ON v.id = vs.video_id
+    FROM public.latest_video_statistics lvs
+    INNER JOIN public.videos v ON v.id = lvs.video_id
     WHERE v.channel_id = $1::uuid
-      AND vs.is_latest IS TRUE
     ;
     """
 

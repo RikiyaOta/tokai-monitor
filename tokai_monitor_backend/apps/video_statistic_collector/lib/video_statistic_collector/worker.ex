@@ -42,6 +42,7 @@ defmodule TokaiMonitorBackend.VideoStatisticCollector.Worker do
         {_n, upserted_videos} = VideoService.upsert_videos(repo, channel.id, videos)
         {_n, _} = VideoStatisticService.switch_is_latest_to_false(repo, channel.id)
         {_n, _} = VideoStatisticService.insert_video_statistics(repo, upserted_videos, videos)
+        {:ok, _} = VideoStatisticService.upsert_latest_video_statistics(repo, channel.id)
       end)
       |> case do
         {:ok, _} -> :ok
