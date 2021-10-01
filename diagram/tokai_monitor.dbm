@@ -143,7 +143,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<table name="latest_video_statistics" layer="0" collapse-mode="2" max-obj-count="12" z-value="0">
+<table name="latest_video_statistics" layer="0" collapse-mode="2" max-obj-count="9" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="1240" y="1060"/>
@@ -166,12 +166,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="bigint" length="0"/>
 	</column>
 	<column name="view_count_last_week">
-		<type name="bigint" length="0"/>
-	</column>
-	<column name="view_count_last_month">
-		<type name="bigint" length="0"/>
-	</column>
-	<column name="view_count_last_year">
 		<type name="bigint" length="0"/>
 	</column>
 	<column name="created_at" not-null="true">
@@ -227,22 +221,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 index-type="btree" factor="0">
 		<idxelement use-sorting="false">
 			<column name="view_count_last_week"/>
-		</idxelement>
-</index>
-
-<index name="idx_latest_video_statistics_view_count_last_month" table="public.latest_video_statistics"
-	 concurrent="false" unique="false" fast-update="false" buffering="false"
-	 index-type="btree" factor="0">
-		<idxelement use-sorting="false">
-			<column name="view_count_last_month"/>
-		</idxelement>
-</index>
-
-<index name="idx_latest_video_statistics_view_count_last_year" table="public.latest_video_statistics"
-	 concurrent="false" unique="false" fast-update="false" buffering="false"
-	 index-type="btree" factor="0">
-		<idxelement use-sorting="false">
-			<column name="view_count_last_year"/>
 		</idxelement>
 </index>
 
