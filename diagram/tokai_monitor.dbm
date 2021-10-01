@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="0,32" last-zoom="1" max-obj-count="4"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" last-position="243,470" last-zoom="1" max-obj-count="4"
 	 default-schema="public" default-owner="postgres">
 <database name="tokai-monitor-db" is-template="false" allow-conns="true">
 </database>
@@ -143,6 +143,109 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
+<table name="latest_video_statistics" layer="0" collapse-mode="2" max-obj-count="12" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1240" y="1060"/>
+	<column name="video_id" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="view_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="like_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="dislike_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="comment_count">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="view_count_last_day">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="view_count_last_week">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="view_count_last_month">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="view_count_last_year">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="created_at" not-null="true">
+		<type name="timestamp with time zone" length="0" with-timezone="true"/>
+	</column>
+	<constraint name="pk_lastest_video_statistics" type="pk-constr" table="public.latest_video_statistics">
+		<columns names="video_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_view_count" table="public.latest_video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="view_count"/>
+		</idxelement>
+</index>
+
+<index name="idx_like_count" table="public.latest_video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="like_count"/>
+		</idxelement>
+</index>
+
+<index name="idx_dislike_count" table="public.latest_video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="dislike_count"/>
+		</idxelement>
+</index>
+
+<index name="idx_comment_count" table="public.latest_video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="comment_count"/>
+		</idxelement>
+</index>
+
+<index name="idx_view_count_last_day" table="public.latest_video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="view_count_last_day"/>
+		</idxelement>
+</index>
+
+<index name="idx_view_count_last_week" table="public.latest_video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="view_count_last_week"/>
+		</idxelement>
+</index>
+
+<index name="idx_view_count_last_month" table="public.latest_video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="view_count_last_month"/>
+		</idxelement>
+</index>
+
+<index name="idx_view_count_last_year" table="public.latest_video_statistics"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="0">
+		<idxelement use-sorting="false">
+			<column name="view_count_last_year"/>
+		</idxelement>
+</index>
+
 <constraint name="fk_channels" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.channels" table="public.videos">
 	<columns names="channel_id" ref-type="src-columns"/>
@@ -155,6 +258,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
+<constraint name="fk_videos" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.videos" table="public.latest_video_statistics">
+	<columns names="video_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
 <relationship name="rel_videos_channels" type="relfk" layer="0"
 	 src-table="public.videos"
 	 dst-table="public.channels" reference-fk="fk_channels"
@@ -162,6 +271,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <relationship name="rel_video_statistics_videos" type="relfk" layer="0"
 	 src-table="public.video_statistics"
+	 dst-table="public.videos" reference-fk="fk_videos"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_latest_video_statistics_videos" type="relfk" layer="0"
+	 src-table="public.latest_video_statistics"
 	 dst-table="public.videos" reference-fk="fk_videos"
 	 src-required="false" dst-required="true"/>
 
